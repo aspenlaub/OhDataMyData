@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,8 +13,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers {
             vLogger = logger;
         }
 
-        public IActionResult Index() {
-            return View();
+        public async Task<IActionResult> IndexAsync() {
+            await Task.Delay(50);
+            return View("Index");
         }
 
         public IActionResult Privacy() {
