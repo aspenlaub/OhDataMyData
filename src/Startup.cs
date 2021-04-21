@@ -1,4 +1,4 @@
-using Aspenlaub.Net.GitHub.CSharp.DvinCore.Components;
+using Aspenlaub.Net.GitHub.CSharp.Dvin.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Entities;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
