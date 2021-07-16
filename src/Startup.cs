@@ -23,9 +23,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
+
             services.AddOData();
 
-            services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
+            /*
+             In >= 8.0.1 once we get there:
+                services
+                .AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false)
+                .AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()).Filter().Select().Expand());
+             */
 
             services.UseDvinAndPegh(new DummyCsArgumentPrompter());
 
