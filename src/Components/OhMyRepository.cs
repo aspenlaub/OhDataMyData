@@ -6,22 +6,22 @@ using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components {
     public class OhMyRepository : IOhMyRepository {
-        private readonly IList<OhMyEntity> vEntities;
+        private readonly IList<OhMyEntity> Entities;
 
         public OhMyRepository() {
-            vEntities = new List<OhMyEntity>();
+            Entities = new List<OhMyEntity>();
         }
 
         public IList<OhMyEntity> GetEntities() {
-            return vEntities;
+            return Entities;
         }
 
         public void Add(OhMyEntity entity) {
-            if (vEntities.Any(e => e.Id == entity.Id)) {
+            if (Entities.Any(e => e.Id == entity.Id)) {
                 throw new ArgumentException("The same entity has already been added");
             }
 
-            vEntities.Add(entity);
+            Entities.Add(entity);
         }
     }
 }

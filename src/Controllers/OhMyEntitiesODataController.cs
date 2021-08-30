@@ -1,25 +1,24 @@
 ﻿using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers {
-    public class OhMyEntitiesODataController : ODataController {
-        private readonly IOhMyRepository vRepository;
+    public class OhMyEntitiesODataController : ControllerBase {
+        private readonly IOhMyRepository Repository;
 
         public OhMyEntitiesODataController(IOhMyRepository repository) {
-            vRepository = repository;
+            Repository = repository;
         }
 
-        [HttpGet, ODataRoute("OhMyEntities"), EnableQuery]
+        [HttpGet, EnableQuery]
         public IActionResult Get() {
-            return Ok(vRepository.GetEntities());
+            return Ok(Repository.GetEntities());
         }
 
-        [HttpGet, ODataRoute("OhMyEntities({key})"), EnableQuery]
-        public IActionResult Get([FromODataUri] string key) {
-            var entity = vRepository.GetEntities().FirstOrDefault(e => e.Id == key);
+        [HttpGet, EnableQuery]
+        public IActionResult Get(string key) {
+            var entity = Repository.GetEntities().FirstOrDefault(e => e.Id == key);
             if (entity == null) { return NotFound(); }
 
             return Ok(entity);

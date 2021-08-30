@@ -1,17 +1,14 @@
 using Aspenlaub.Net.GitHub.CSharp.Dvin.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components;
-using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Entities;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
-using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.OData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OData.Edm;
 
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
     public class Startup {
@@ -23,20 +20,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
-
-            services.AddOData();
-
-            /*
-             In >= 8.0.1 once we get there:
-                services
-                .AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false)
-                .AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()).Filter().Select().Expand());
-             */
-
             services.UseDvinAndPegh(new DummyCsArgumentPrompter());
 
             services.AddSingleton<IOhMyRepository>(new OhMySampleRepository());
+
+            services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
+
+            var model = OhMyModelBuilder.GetEdmModel();
+            services.AddControllers()
+                .AddOData(opt => opt.Count().Filter().Expand().Select().OrderBy().SetMaxTop(5)
+                    .AddRouteComponents("odata", model)
+                    .Conventions.Add(new OhMyConvention())
+                );
+
+            services.AddRazorPages();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,25 +45,29 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
             } else {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
 
-            app.UseAuthorization();
+            app.UseRouting();
 
-            app.UseMvc(routebuilder => {
-                routebuilder.Select().Expand().Filter().OrderBy(QueryOptionSetting.Allowed).MaxTop(null).Count();
-                routebuilder.MapODataServiceRoute("ODataRoute", "odata", GetEdmModel());
-                routebuilder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            app.UseODataRouteDebug("odata");
+            app.UseODataQueryRequest();
+
+            app.Use(next => context => {
+                var endpoint = context.GetEndpoint();
+                // ReSharper disable once ConvertIfStatementToReturnStatement
+                if (endpoint == null) {
+                    return next(context);
+                }
+
+                return next(context);
             });
-        }
 
-        private static IEdmModel GetEdmModel() {
-            var builder = new ODataConventionModelBuilder {
-                Namespace = "Aspenlaub.Net.GitHub.CSharp.OhDataMyData",
-                ContainerName = "DefaultContainer"
-            };
-            builder.EntitySet<OhMyEntity>("OhMyEntities");
-
-            return builder.GetEdmModel();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+            });
         }
     }
 }

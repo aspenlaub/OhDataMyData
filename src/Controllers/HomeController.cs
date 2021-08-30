@@ -7,10 +7,10 @@ using Microsoft.Extensions.Logging;
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers {
     public class HomeController : Controller {
         // ReSharper disable once NotAccessedField.Local
-        private readonly ILogger<HomeController> vLogger;
+        private readonly ILogger<HomeController> Logger;
 
         public HomeController(ILogger<HomeController> logger) {
-            vLogger = logger;
+            Logger = logger;
         }
 
         public async Task<IActionResult> IndexAsync() {
