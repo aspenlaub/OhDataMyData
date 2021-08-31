@@ -1,9 +1,14 @@
+using System;
+using System.IO;
+using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components;
+using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -57,11 +62,42 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
                 return next(context);
             });
 
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
-                endpoints.MapDefaultControllerRoute(); // for http://localhost:56027/
-                endpoints.MapRazorPages(); // for e.g. return View("Index");
-            });
+            app.UseEndpoints(ConfigureEndpoints);
+        }
+
+        private static void ConfigureEndpoints(IEndpointRouteBuilder endpoints) {
+            endpoints.MapControllers();
+            endpoints.MapDefaultControllerRoute(); // for http://localhost:56027/
+            endpoints.MapRazorPages(); // for e.g. return View("Index");
+            var dataSources = endpoints.DataSources;
+            if (dataSources.Count != 2) {
+                throw new Exception($"Unexpected number of data sources: {dataSources.Count}");
+            }
+
+            var displayNames = dataSources.SelectMany(e => e.Endpoints.Select(e => e.DisplayName)).ToList();
+            if (displayNames.Contains(null)) {
+                throw new Exception(nameof(displayNames));
+            }
+            if (displayNames.Count != 8) {
+                throw new Exception($"Unexpected number of display names: {displayNames.Count}");
+            }
+
+            var displayName = displayNames.First();
+            if (!displayName.Contains(nameof(HomeController))) {
+                throw new Exception($"Unexpected display name: {displayName}");
+            }
+
+            displayNames = displayNames.Where(IsRelatedToOhMyEntitiesODataController).ToList();
+            if (displayNames.Count != 2) {
+                throw new Exception($"Unexpected number of display names related to {nameof(OhMyEntitiesODataController)}: {displayNames.Count}");
+            }
+
+            File.WriteAllLines(@"c:\Temp\ohMyDisplayNames.txt", displayNames);
+        }
+
+        private static bool IsRelatedToOhMyEntitiesODataController(string displayName) {
+            return displayName.Contains(nameof(OhMyEntitiesODataController))
+                   && displayName.Contains(nameof(OhMyEntitiesODataController.Get));
         }
     }
 }
