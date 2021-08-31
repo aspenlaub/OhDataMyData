@@ -20,8 +20,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
         public void ConfigureServices(IServiceCollection services) {
             services.AddSingleton<IOhMyRepository>(new OhMySampleRepository());
 
-            services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
-
             var model = OhMyModelBuilder.GetEdmModel();
             services.AddControllers()
                 .AddOData(opt => opt.Count().Filter().Expand().Select().OrderBy().SetMaxTop(5)
@@ -29,7 +27,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
                     .Conventions.Add(new OhMyConvention())
                 );
 
-            services.AddRazorPages();
+             services.AddRazorPages(); // for MapRazorPages()
 
         }
 
@@ -44,9 +42,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
 
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseRouting(); // for UseEndpoints()
 
-            app.UseODataRouteDebug("odata");
+            app.UseODataRouteDebug("odata"); // for display of end points at http://localhost:56027/odata
             app.UseODataQueryRequest();
 
             app.Use(next => context => {
@@ -61,8 +59,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapRazorPages();
+                endpoints.MapDefaultControllerRoute(); // for http://localhost:56027/
+                endpoints.MapRazorPages(); // for e.g. return View("Index");
             });
         }
     }
