@@ -1,7 +1,5 @@
-using Aspenlaub.Net.GitHub.CSharp.Dvin.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,8 +18,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.UseDvinAndPegh(new DummyCsArgumentPrompter());
-
             services.AddSingleton<IOhMyRepository>(new OhMySampleRepository());
 
             services.AddControllersWithViews(mvc => mvc.EnableEndpointRouting = false);
