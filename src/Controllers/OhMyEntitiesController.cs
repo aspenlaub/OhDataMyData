@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers {
-    public class OhMyEntitiesODataController : ControllerBase {
+    public class OhMyEntitiesController : ControllerBase {
         private readonly IOhMyRepository Repository;
 
-        public OhMyEntitiesODataController(IOhMyRepository repository) {
+        public OhMyEntitiesController(IOhMyRepository repository) {
             Repository = repository;
         }
 

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Test {
     [TestClass]
-    public class OhMyEntitiesODataControllerTest {
+    public class OhMyEntitiesControllerTest {
         [TestMethod]
         public async Task CanGetEntities() {
             var client = ControllerTestHelpers.CreateHttpClient();

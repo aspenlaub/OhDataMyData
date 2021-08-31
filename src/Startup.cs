@@ -78,7 +78,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
             if (displayNames.Contains(null)) {
                 throw new Exception(nameof(displayNames));
             }
-            if (displayNames.Count != 8) {
+            if (displayNames.Count != 10) {
                 throw new Exception($"Unexpected number of display names: {displayNames.Count}");
             }
 
@@ -87,17 +87,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
                 throw new Exception($"Unexpected display name: {displayName}");
             }
 
-            displayNames = displayNames.Where(IsRelatedToOhMyEntitiesODataController).ToList();
-            if (displayNames.Count != 2) {
-                throw new Exception($"Unexpected number of display names related to {nameof(OhMyEntitiesODataController)}: {displayNames.Count}");
+            displayNames = displayNames.Where(IsRelatedToOhMyEntitiesController).ToList();
+            if (displayNames.Count != 4) {
+                throw new Exception($"Unexpected number of display names related to {nameof(OhMyEntitiesController)}: {displayNames.Count}");
             }
-
-            File.WriteAllLines(@"c:\Temp\ohMyDisplayNames.txt", displayNames);
         }
 
-        private static bool IsRelatedToOhMyEntitiesODataController(string displayName) {
-            return displayName.Contains(nameof(OhMyEntitiesODataController))
-                   && displayName.Contains(nameof(OhMyEntitiesODataController.Get));
+        private static bool IsRelatedToOhMyEntitiesController(string displayName) {
+            return displayName.Contains(nameof(OhMyEntitiesController))
+                   && displayName.Contains(nameof(OhMyEntitiesController.Get));
         }
     }
 }
