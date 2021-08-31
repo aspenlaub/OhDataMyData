@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Components;
 using Aspenlaub.Net.GitHub.CSharp.OhDataMyData.Controllers;
@@ -74,7 +73,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.OhDataMyData {
                 throw new Exception($"Unexpected number of data sources: {dataSources.Count}");
             }
 
-            var displayNames = dataSources.SelectMany(e => e.Endpoints.Select(e => e.DisplayName)).ToList();
+            var displayNames = dataSources.SelectMany(d => d.Endpoints.Select(e => e.DisplayName)).ToList();
             if (displayNames.Contains(null)) {
                 throw new Exception(nameof(displayNames));
             }
