@@ -2,7 +2,7 @@
 #addin nuget:?package=Cake.Git&version=2.0.0
 #addin nuget:?package=System.Runtime.Loader
 #addin nuget:?package=Microsoft.Bcl.AsyncInterfaces
-#addin nuget:?package=Fusion50&loaddependencies=true&version=2.0.1483.916
+#addin nuget:?package=Fusion50&loaddependencies=true&version=2.0.1484.1035
 
 using Regex = System.Text.RegularExpressions.Regex;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,16 +66,13 @@ if (solutionSpecialSettingsDictionary.ContainsKey("CreateAndPushPackages")) {
   createAndPushPackages = createAndPushPackagesText == "TRUE";
 }
 
-var isMasterOrBranchWithPackages = (currentGitBranch == "master");
-if (createAndPushPackages) {
-  var branchesWithPackagesRepository = container.Resolve<IBranchesWithPackagesRepository>();
-  var bwpErrorsAndInfos = new ErrorsAndInfos();
-  var idsOfBranchesWithPackages = await branchesWithPackagesRepository.GetBranchIdsAsync(bwpErrorsAndInfos);
-  if (bwpErrorsAndInfos.Errors.Any()) {
-    throw new Exception(bwpErrorsAndInfos.ErrorsToString());
-  }
-  isMasterOrBranchWithPackages = isMasterOrBranchWithPackages || idsOfBranchesWithPackages.Contains(currentGitBranch);
+var branchesWithPackagesRepository = container.Resolve<IBranchesWithPackagesRepository>();
+var bwpErrorsAndInfos = new ErrorsAndInfos();
+var idsOfBranchesWithPackages = await branchesWithPackagesRepository.GetBranchIdsAsync(bwpErrorsAndInfos);
+if (bwpErrorsAndInfos.Errors.Any()) {
+  throw new Exception(bwpErrorsAndInfos.ErrorsToString());
 }
+var isMasterOrBranchWithPackages = currentGitBranch == "master" || idsOfBranchesWithPackages.Contains(currentGitBranch);
 
 var latestBuildCakeUrl = "https://raw.githubusercontent.com/aspenlaub/Shatilaya/master/build.cake?g=" + System.Guid.NewGuid();
 if (isMasterOrBranchWithPackages) {
