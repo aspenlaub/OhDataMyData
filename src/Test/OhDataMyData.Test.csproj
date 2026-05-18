@@ -19,9 +19,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.7" />
-    <PackageReference Include="Seoa" Version="2.0.2472.648" />
-    <PackageReference Include="System.Text.Json" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.8" />
+    <PackageReference Include="Seoa" Version="2.0.2489.1148" />
+    <PackageReference Include="System.Text.Json" Version="10.0.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OhDataMyData.csproj" />
